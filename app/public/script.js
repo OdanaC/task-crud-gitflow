@@ -12,10 +12,16 @@ openFormBtn.addEventListener("click", () => {
 taskForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
-  const title = document.getElementById("taskTitle").value;
-  const desc = document.getElementById("taskDesc").value;
+  const title = document.getElementById("taskTitle").value.trim();
+  const desc = document.getElementById("taskDesc").value.trim();
 
-  tasks.push({ title, desc });
+  if (!title) return;
+
+  tasks.push({
+    title,
+    desc,
+    status: "Pendiente"
+  });
 
   renderTasks();
   taskForm.reset();
@@ -24,10 +30,32 @@ taskForm.addEventListener("submit", (e) => {
 function renderTasks() {
   taskList.innerHTML = "";
 
-  tasks.forEach((task) => {
+  if (tasks.length === 0) {
+    taskList.innerHTML = `
+      <li class="list-group-item text-muted text-center">
+        No hay tareas registradas
+      </li>
+    `;
+    return;
+  }
+
+  tasks.forEach((task, index) => {
     const li = document.createElement("li");
     li.className = "list-group-item";
-    li.textContent = `${task.title} - ${task.desc}`;
+
+    li.innerHTML = `
+      <div class="d-flex justify-content-between align-items-start gap-3">
+        <div>
+          <h3 class="h6 mb-1">${task.title}</h3>
+          <p class="mb-1 text-muted">${task.desc || "Sin descripción"}</p>
+          <span class="badge bg-secondary">${task.status}</span>
+        </div>
+        <span class="text-muted small">#${index + 1}</span>
+      </div>
+    `;
+
     taskList.appendChild(li);
   });
 }
+
+renderTasks();
