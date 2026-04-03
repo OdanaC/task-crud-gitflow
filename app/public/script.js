@@ -70,9 +70,15 @@ function renderTasks() {
         </div>
         <div class="d-flex flex-column gap-2 align-items-end">
           <span class="text-muted small">#${index + 1}</span>
-          <button class="btn btn-sm btn-outline-primary edit-btn" data-index="${index}">
-            Editar
-          </button>
+          <div class="d-flex flex-column gap-2 align-items-end">
+            <span class="text-muted small">#${index + 1}</span>
+               <button class="btn btn-sm btn-outline-primary edit-btn" data-index="${index}">
+                 Editar
+                </button>
+                <button class="btn btn-sm btn-outline-danger delete-btn" data-index="${index}">
+    Eliminar
+  </button>
+</div>
         </div>
       </div>
     `;
@@ -81,6 +87,7 @@ function renderTasks() {
   });
 
   bindEditEvents();
+  bindDeleteEvents();
 }
 
 function bindEditEvents() {
@@ -106,11 +113,28 @@ function editTask(index) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
+function deleteTask(index) {
+  const confirmDelete = confirm("¿Eliminar esta tarea?");
+  if (!confirmDelete) return;
+
+  tasks.splice(index, 1);
+  renderTasks();
+}
+
 function resetForm() {
   taskIndexInput.value = "";
   taskTitleInput.value = "";
   taskDescInput.value = "";
   cancelEditBtn.classList.add("d-none");
+}
+
+function bindDeleteEvents() {
+  document.querySelectorAll(".delete-btn").forEach((button) => {
+    button.addEventListener("click", () => {
+      const index = button.dataset.index;
+      deleteTask(index);
+    });
+  });
 }
 
 renderTasks();
