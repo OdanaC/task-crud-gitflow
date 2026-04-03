@@ -15,9 +15,15 @@
 
     <div id="formContainer" class="card p-3 mb-3 d-none">
       <form id="taskForm">
+        <input type="hidden" id="taskIndex">
+
         <input type="text" id="taskTitle" class="form-control mb-2" placeholder="Título" required>
         <textarea id="taskDesc" class="form-control mb-2" placeholder="Descripción"></textarea>
-        <button type="submit" class="btn btn-success">Guardar</button>
+
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-success">Guardar</button>
+          <button type="button" id="cancelEditBtn" class="btn btn-secondary d-none">Cancelar edición</button>
+        </div>
       </form>
     </div>
 
