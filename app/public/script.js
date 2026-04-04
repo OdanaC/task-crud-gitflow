@@ -4,6 +4,7 @@ const taskForm = document.getElementById("taskForm");
 const taskList = document.getElementById("taskList");
 const cancelEditBtn = document.getElementById("cancelEditBtn");
 
+const taskStatusInput = document.getElementById("taskStatus");
 const taskIndexInput = document.getElementById("taskIndex");
 const taskTitleInput = document.getElementById("taskTitle");
 const taskDescInput = document.getElementById("taskDesc");
@@ -25,6 +26,7 @@ taskForm.addEventListener("submit", (e) => {
 
   const title = taskTitleInput.value.trim();
   const desc = taskDescInput.value.trim();
+  const status = taskStatusInput.value;
   const taskIndex = taskIndexInput.value;
 
   if (!title) return;
@@ -32,11 +34,12 @@ taskForm.addEventListener("submit", (e) => {
   if (taskIndex !== "") {
     tasks[taskIndex].title = title;
     tasks[taskIndex].desc = desc;
+    tasks[taskIndex].status = status;
   } else {
     tasks.push({
       title,
       desc,
-      status: "Pendiente"
+      status
     });
   }
 
@@ -48,14 +51,15 @@ taskForm.addEventListener("submit", (e) => {
 function renderTasks() {
   taskList.innerHTML = "";
 
-  if (tasks.length === 0) {
-    taskList.innerHTML = `
-      <li class="list-group-item text-muted text-center">
-        No hay tareas registradas
-      </li>
-    `;
-    return;
-  }
+if (tasks.length === 0) {
+  taskList.innerHTML = `
+    <li class="list-group-item text-center">
+      <strong>No hay tareas registradas</strong><br>
+      <small class="text-muted">Agrega una nueva tarea para comenzar</small>
+    </li>
+  `;
+  return;
+}
 
   tasks.forEach((task, index) => {
     const li = document.createElement("li");
@@ -66,7 +70,7 @@ function renderTasks() {
         <div>
           <h3 class="h6 mb-1">${task.title}</h3>
           <p class="mb-1 text-muted">${task.desc || "Sin descripción"}</p>
-          <span class="badge bg-secondary">${task.status}</span>
+          <span class="badge ${getStatusClass(task.status)}">${task.status}</span>
         </div>
         <div class="d-flex flex-column gap-2 align-items-end">
           <span class="text-muted small">#${index + 1}</span>
@@ -106,6 +110,7 @@ function editTask(index) {
   taskIndexInput.value = index;
   taskTitleInput.value = task.title;
   taskDescInput.value = task.desc;
+  taskStatusInput.value = task.status;
 
   cancelEditBtn.classList.remove("d-none");
   formContainer.classList.remove("d-none");
@@ -125,6 +130,7 @@ function resetForm() {
   taskIndexInput.value = "";
   taskTitleInput.value = "";
   taskDescInput.value = "";
+  taskStatusInput.value = "Pendiente";
   cancelEditBtn.classList.add("d-none");
 }
 
@@ -135,6 +141,12 @@ function bindDeleteEvents() {
       deleteTask(index);
     });
   });
+}
+
+function getStatusClass(status) {
+  if (status === "Pendiente") return "bg-secondary";
+  if (status === "En progreso") return "bg-warning text-dark";
+  return "bg-success";
 }
 
 renderTasks();
